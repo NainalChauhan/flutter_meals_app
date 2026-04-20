@@ -1,24 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class FiltersScreen extends StatefulWidget{
-  const FiltersScreen({super.key, required this.currentFilters});
+import '../providers/filters_provider.dart';
 
-  final Map<Filters, bool> currentFilters;
+class FiltersScreen extends ConsumerStatefulWidget{
+  const FiltersScreen({super.key});
 
   @override
-  State<FiltersScreen> createState() {
+  ConsumerState<FiltersScreen> createState() {
     return FiltersScreenState();
   }
 }
 
-enum Filters {
-  glutenFree,
-  lactoseFree,
-  vegetarian,
-  vegan
-}
-
-class FiltersScreenState extends State<FiltersScreen> {
+class FiltersScreenState extends ConsumerState<FiltersScreen> {
   var _isGlutenFreeFilterSet = false;
   var _lactoseFreeFilterSet = false;
   var _vegetarianFilterSet = false;
@@ -27,10 +21,11 @@ class FiltersScreenState extends State<FiltersScreen> {
   @override
   void initState() {
     super.initState();
-    _isGlutenFreeFilterSet = widget.currentFilters[Filters.glutenFree] ?? false;
-    _lactoseFreeFilterSet = widget.currentFilters[Filters.lactoseFree] ?? false;
-    _vegetarianFilterSet = widget.currentFilters[Filters.vegetarian] ?? false;
-    _veganFilterSet = widget.currentFilters[Filters.vegan] ?? false;
+    final currentFilters = ref.read(filtersProvider);
+    _isGlutenFreeFilterSet = currentFilters[Filters.glutenFree] ?? false;
+    _lactoseFreeFilterSet = currentFilters[Filters.lactoseFree] ?? false;
+    _vegetarianFilterSet = currentFilters[Filters.vegetarian] ?? false;
+    _veganFilterSet = currentFilters[Filters.vegan] ?? false;
   }
   @override
   Widget build(BuildContext context) {
@@ -39,10 +34,8 @@ class FiltersScreenState extends State<FiltersScreen> {
         title: Text("Your Filters"),
       ),
       body: PopScope(
-        canPop: false,
         onPopInvokedWithResult: (bool didPop, dynamic result) {
-          if(didPop) return;
-          Navigator.of(context).pop({
+          ref.read(filtersProvider.notifier).setFilters({
             Filters.glutenFree: _isGlutenFreeFilterSet,
             Filters.lactoseFree: _lactoseFreeFilterSet,
             Filters.vegetarian: _vegetarianFilterSet,

@@ -10,8 +10,12 @@ class MealDetailsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final favouriteMeals = ref.watch(favouritesNotifierProvider);
+    final isFavourite = favouriteMeals.contains(meal);
+
     return Scaffold(
       appBar: AppBar(
+        actionsPadding: EdgeInsetsGeometry.all(12.0),
         title: Text(meal.title),
         actions: [
           IconButton(
@@ -23,7 +27,7 @@ class MealDetailsScreen extends ConsumerWidget {
                 showSnackBarMessage("Meal is no longer favourites.!", context);
               }
             },
-            icon: Icon(Icons.star),
+            icon: Icon(isFavourite ? Icons.star : Icons.star_border),
           ),
         ],
       ),

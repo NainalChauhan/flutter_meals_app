@@ -15,7 +15,7 @@ class MealDetailsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        actionsPadding: EdgeInsetsGeometry.all(12.0),
+        actionsPadding: EdgeInsetsGeometry.all(14.0),
         title: Text(meal.title),
         actions: [
           IconButton(
@@ -27,7 +27,16 @@ class MealDetailsScreen extends ConsumerWidget {
                 showSnackBarMessage("Meal is no longer favourites.!", context);
               }
             },
-            icon: Icon(isFavourite ? Icons.star : Icons.star_border),
+            icon: AnimatedSwitcher(
+              duration: Duration(milliseconds: 300),
+              //use key for child as to differentiate change in widget icon for flutter to identify and animate
+              child: Icon(isFavourite ? Icons.star : Icons.star_border, key: ValueKey(isFavourite),),
+              transitionBuilder: (child, animation) {
+                return RotationTransition(
+                    turns: Tween<double>(begin: 0.8, end: 1).animate(animation),
+                    child: child);
+              },
+            ),
           ),
         ],
       ),
